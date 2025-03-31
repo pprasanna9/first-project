@@ -42,6 +42,8 @@
       cursor: pointer;
       text-decoration: none;
       transition: background-color 0.3s ease;
+      display: inline-block;
+      margin: 0.3rem;
     }
 
     .btn:hover {
@@ -70,9 +72,21 @@
 <body>
   <h1>🏈 Georgia Tech Football AI Assistant</h1>
   <p>Upload Excel files and get instant insights on opposing teams. Powered by ChatGPT, tuned for Georgia Tech’s strategy and performance needs.</p>
+
   <a href="https://chatgpt.com/g/g-67eaf169874c8191b006335dbd71306f-georgia-tech-football-ai-assistant" target="_blank" class="btn">
     Launch Assistant
   </a>
+
+  <div style="margin-top: 2rem;">
+    <h2 style="margin-bottom: 1rem;">📊 Download Sample Data</h2>
+    <div>
+      <a href="data/output_rushing.xlsx" download class="btn">Rushing Data</a>
+      <a href="data/output_receiving.xlsx" download class="btn">Receiving Data</a>
+      <a href="data/output_passing.xlsx" download class="btn">Passing Data</a>
+      <a href="data/output_defense.xlsx" download class="btn">Defensive Data</a>
+      <a href="data/output_offensive_blocking.xlsx" download class="btn">Offensive Blocking Data</a>
+    </div>
+  </div>
 
   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Football_%28American%29_icon.svg" alt="Football Background" class="football-bg">
 </body>
