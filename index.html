@@ -9,10 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
-  :root{
-    --gt-navy:#003057; --gt-gold:#B3A369; --gt-gold-2:#d1b674;
-    --glass:rgba(255,255,255,.07); --ring:rgba(179,163,105,.35);
-  }
+  :root{ --gt-navy:#003057; --gt-gold:#B3A369; --gt-gold-2:#d1b674; --ring:rgba(179,163,105,.35); }
   *{box-sizing:border-box} html,body{height:100%}
   body{
     margin:0; color:var(--gt-gold);
@@ -21,11 +18,10 @@
       radial-gradient(900px 600px at 110% -10%, rgba(255,255,255,.06), transparent 60%),
       repeating-linear-gradient(to bottom, rgba(255,255,255,.06) 0 2px, transparent 2px 70px),
       var(--gt-navy);
-    font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    line-height:1.45;
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif; line-height:1.45;
   }
-  .wrap{max-width:1200px; margin:0 auto; padding:56px 18px}
-  header{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px}
+  .wrap{max-width:1200px;margin:0 auto;padding:56px 18px}
+  header{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px}
   .badge{width:56px;height:56px;border-radius:50%;background:linear-gradient(145deg,var(--gt-gold),#e6d39a);
     display:grid;place-items:center;color:var(--gt-navy);box-shadow:0 12px 30px rgba(0,0,0,.25), inset 0 2px 8px rgba(255,255,255,.35);font-size:27px;font-weight:800}
   h1{margin:0;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:.5px;
@@ -38,25 +34,19 @@
   .section{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
     border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:22px;box-shadow:0 18px 38px rgba(0,0,0,.25);backdrop-filter:blur(8px);margin:18px 0}
   .section h2{font-family:'Oswald',sans-serif;margin:0 0 12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px} .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   @media (max-width:980px){.grid-2,.grid-3{grid-template-columns:1fr}}
   .card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px}
   .stat{font-size:1.6rem;font-weight:800;color:#ffeaa4}
-
-  /* Wider chat modal */
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
   .modal[open]{display:flex}
-  .modal-card{width:min(92vw,1200px);height:min(88vh,900px);border-radius:20px;overflow:hidden;background:#0c1f38;
-    border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .18s ease-out}
+  .modal-card{width:min(92vw,1200px);height:min(88vh,900px);border-radius:20px;overflow:hidden;background:#0c1f38;border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .18s ease-out}
   @keyframes pop{from{transform:scale(.98);opacity:0}to{transform:scale(1);opacity:1}}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;
-    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-bottom:1px solid rgba(255,255,255,.08)}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-bottom:1px solid rgba(255,255,255,.08)}
   .modal-title{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:10px}
   .close{border:0;background:transparent;color:#f5eeda;font-size:26px;cursor:pointer;line-height:1;padding:6px 10px;border-radius:10px}
   .close:hover{background:rgba(255,255,255,.08)}
-  .frame-wrap{height:calc(100% - 58px)}
-  iframe.assistant{width:100%;height:100%;border:0;display:block;background:#fff}
+  .frame-wrap{height:calc(100% - 58px)} iframe.assistant{width:100%;height:100%;border:0;display:block;background:#fff}
 </style>
 </head>
 <body>
@@ -68,19 +58,8 @@
   </header>
 
   <p class="sub">
-    Now reading: <b>GT Offense vs All Opponents</b> (single CSV). Select an opponent to see scouting and a quick prediction.
+    This page reads multiple GT CSVs (offense + matchup breakdowns). Pick an opponent to see scouting, charts, and a quick prediction.
   </p>
-
-  <div class="section">
-    <h2>⏱️ Countdown to Next Game</h2>
-    <div id="countdown" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <div class="card"><div class="stat" id="cd-days">–</div>Days</div>
-      <div class="card"><div class="stat" id="cd-hours">–</div>Hours</div>
-      <div class="card"><div class="stat" id="cd-mins">–</div>Mins</div>
-      <div class="card"><div class="stat" id="cd-secs">–</div>Secs</div>
-    </div>
-    <p class="sub" id="nextGameLabel" style="margin:10px 0 0; font-size:.96rem; opacity:.85;"></p>
-  </div>
 
   <div class="section">
     <h2>🧠 Opponent Scouting & 🔮 Prediction</h2>
@@ -89,7 +68,7 @@
         <h3 style="margin-top:0">Opponent Scouting Summary</h3>
         <label for="opponentSelect">Opponent:</label>
         <select id="opponentSelect" class="btn" style="padding:10px;font-weight:700;border-radius:10px;margin-left:10px"></select>
-        <div id="scoutOut" style="margin-top:14px; font-size:1rem; line-height:1.5"><em>Loading CSV…</em></div>
+        <div id="scoutOut" style="margin-top:14px; font-size:1rem; line-height:1.55"><em>Loading CSVs…</em></div>
       </div>
       <div class="card">
         <h3 style="margin-top:0">Game Prediction (toy)</h3>
@@ -104,27 +83,38 @@
   </div>
 
   <div class="section">
-    <h2>📊 Dashboard from This CSV</h2>
+    <h2>📊 Dashboard</h2>
     <div class="grid-2">
       <div class="card">
-        <h3 style="margin-top:0">GT vs Opp — Rushing (Yds/Play)</h3>
+        <h3 style="margin-top:0">Rushing — GT Yards/Play vs Opp</h3>
         <canvas id="rushChart" height="190"></canvas>
       </div>
       <div class="card">
-        <h3 style="margin-top:0">GT vs Opp — Passing (Yds/Play)</h3>
+        <h3 style="margin-top:0">Passing — GT Yards/Play vs Opp</h3>
         <canvas id="passChart" height="190"></canvas>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:18px">
+      <div class="card">
+        <h3 style="margin-top:0">WR vs DB — Yards/Target (by Opp)</h3>
+        <canvas id="wrDbChart" height="190"></canvas>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">TE vs S — Yards/Target (by Opp)</h3>
+        <canvas id="teSChart" height="190"></canvas>
       </div>
     </div>
   </div>
 
   <div class="section">
-    <h2>⭐ Spotlight (by Opponent)</h2>
+    <h2>⭐ Spotlights</h2>
     <div id="spotlights" class="grid-3"></div>
   </div>
 
   <div style="display:flex;gap:12px;justify-content:center;margin-top:10px">
     <button id="openAssistant" class="btn">Launch Assistant</button>
-    <a class="btn" href="gt_offense_vs_all_opp_lbs_breakdown.csv" download>Download Current CSV</a>
+    <!-- quick links to raw CSVs -->
+    <a class="btn" href="gt_offense_vs_all_opp_lbs_breakdown.csv" download>Download Offense CSV</a>
   </div>
 </main>
 
@@ -150,20 +140,21 @@
 </dialog>
 
 <script>
-/* ===== CONFIG (edit nextGame if you want) ===== */
-const CONFIG = {
-  nextGame: {
-    label: "vs TBD — Bobby Dodd Stadium",
-    kickoffISO: "2025-11-01T15:30:00"
-  },
-  csvPath: "gt_offense_vs_all_opp_lbs_breakdown.csv" // single CSV at repo root
+/* =======================
+   CONFIG: CSV file paths
+======================= */
+const CSV_PATHS = {
+  offense: "gt_offense_vs_all_opp_lbs_breakdown.csv",
+  db_vs_wr: "gt_db_defense_vs_opponent_wr_offense_breakdown.csv",
+  lb_vs_te: "gt_lb_defense_vs_opponent_te_offense_breakdown.csv",
+  te_vs_s : "gt_te_pass_vs_safety_coverage_breakdown.csv",
+  wr_vs_db: "gt_wr_pass_vs_db_coverage_breakdown.csv",
 };
 
-/* ===== Helpers ===== */
+/* ============ helpers ============ */
 const $ = s => document.querySelector(s);
 function numify(v){
   if (v == null) return 0;
-  // strip commas and units like "yds"
   const cleaned = String(v).replace(/[, ]/g,"").replace(/[^0-9.\-]/g,"");
   const n = parseFloat(cleaned);
   return isNaN(n) ? 0 : n;
@@ -174,9 +165,8 @@ function parseCSV(text){
   return {
     headers,
     rows: lines.map(line=>{
-      const cells = line.split(","); // simple split; fine for no embedded commas
-      const o = {};
-      headers.forEach((h,i)=> o[h] = (cells[i]??"").trim());
+      const cells = line.split(","); // simple split
+      const o = {}; headers.forEach((h,i)=> o[h] = (cells[i]??"").trim());
       return o;
     })
   };
@@ -190,78 +180,101 @@ function findHeader(headers, candidates){
   return null;
 }
 
-/* ===== Modal controls ===== */
-const modal = $('#assistantModal');
-$('#openAssistant').addEventListener('click', ()=> modal.showModal());
-$('#closeAssistant').addEventListener('click', ()=> modal.close());
-modal.addEventListener('click', (e)=>{
-  const r = modal.querySelector('.modal-card').getBoundingClientRect();
-  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) modal.close();
-});
-document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.open) modal.close() });
-
-/* ===== Countdown ===== */
-(function(){
-  const kick = new Date(CONFIG.nextGame.kickoffISO);
-  $('#nextGameLabel').textContent = `${CONFIG.nextGame.label} — ${kick.toLocaleString()}`;
-  function tick(){
-    const now = new Date(); let s = Math.max(0, Math.floor((kick - now)/1000));
-    const d = Math.floor(s/86400); s -= d*86400;
-    const h = Math.floor(s/3600); s -= h*3600;
-    const m = Math.floor(s/60); const sec = s - m*60;
-    $('#cd-days').textContent=d; $('#cd-hours').textContent=h; $('#cd-mins').textContent=m; $('#cd-secs').textContent=sec;
-  }
-  tick(); setInterval(tick, 1000);
-})();
-
-/* ===== Load the single CSV and wire features ===== */
-let CSV = null;
-let COLS = {}; // detected columns
-
+/* ============ load all CSVs ============ */
+const DATA = {};
+const COLS = {};
 (async function init(){
-  try{
-    const res = await fetch(CONFIG.csvPath, { cache: "no-store" });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    CSV = parseCSV(text);
-    detectColumns();
-    buildOpponentDropdowns();
-    renderScout();
-    renderPrediction();
-    renderCharts();
-    renderSpotlights();
-  }catch(e){
-    console.error(e);
-    $('#scoutOut').innerHTML = `<span style="color:#ffdede">Failed to load CSV (${e.message}). Make sure the file is at the repo root and you're viewing via GitHub Pages (not file://).</span>`;
-  }
+  // load each path; ignore 404 gracefully
+  await Promise.all(Object.entries(CSV_PATHS).map(async ([key,path])=>{
+    try{
+      const res = await fetch(path, { cache:"no-store" });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      DATA[key] = parseCSV(text);
+    }catch(e){
+      console.warn("CSV load failed:", key, path, e.message);
+      DATA[key] = null;
+    }
+  }));
+
+  detectColumns();
+  buildOpponentDropdowns();
+  renderScout();
+  renderPrediction();
+  renderCharts();
+  renderSpotlights();
 })();
 
-/* ===== Column detection (very forgiving) ===== */
+/* ====== column detection for each file ====== */
 function detectColumns(){
-  const H = CSV.headers;
-  COLS.opponent = findHeader(H, ["opponent","opp","defense_team","team"]);
-  // rushing & passing per-play if present
-  COLS.rushYPP = findHeader(H, ["rush_ypp","rushing_ypp","rush_ypc","rushing_ypc","rush_yards_per_play","rushing_yards_per_play"]);
-  COLS.rushYds = findHeader(H, ["rush_yards","rushing_yards","rush_yds","rushing_yds","ry"]);
-  COLS.rushAtt = findHeader(H, ["rush_att","rushing_att","carries","rush_attempts"]);
-  COLS.passYPP = findHeader(H, ["pass_ypp","passing_ypp","pass_ypa","passing_ypa","pass_yards_per_play"]);
-  COLS.passYds = findHeader(H, ["pass_yards","passing_yards","py","pass_yds","passing_yds"]);
-  COLS.passAtt = findHeader(H, ["attempts","pass_att","passing_att","pass_attempts"]);
-  COLS.ypp     = findHeader(H, ["yards_per_play","ypp","avg_yards"]);
-  COLS.success = findHeader(H, ["success_rate","sr"]);
-  COLS.epa     = findHeader(H, ["epa","off_epa","epa_per_play"]);
-  COLS.td      = findHeader(H, ["td","tds","touchdowns","off_td"]);
+  // OFFENSE (baseline)
+  if (DATA.offense){
+    const H = DATA.offense.headers;
+    COLS.offense = {
+      opponent: findHeader(H, ["opponent","opp","defense_team","team"]),
+      rushYPP : findHeader(H, ["rush_ypp","rushing_ypp","rush_ypc","rushing_ypc","rush_yards_per_play"]),
+      rushYds : findHeader(H, ["rush_yards","rushing_yards","rush_yds"]),
+      rushAtt : findHeader(H, ["rush_att","rushing_att","carries","rush_attempts"]),
+      passYPP : findHeader(H, ["pass_ypp","passing_ypp","pass_ypa","passing_ypa","pass_yards_per_play"]),
+      passYds : findHeader(H, ["pass_yards","passing_yards","pass_yds"]),
+      passAtt : findHeader(H, ["attempts","pass_att","passing_att","pass_attempts"]),
+      ypp     : findHeader(H, ["yards_per_play","ypp","avg_yards"]),
+      success : findHeader(H, ["success_rate","sr"]),
+      epa     : findHeader(H, ["epa","off_epa","epa_per_play"]),
+      td      : findHeader(H, ["td","tds","touchdowns","off_td"]),
+    };
+  }
+  // WR vs DB (yards per target / completion %)
+  if (DATA.wr_vs_db){
+    const H = DATA.wr_vs_db.headers;
+    COLS.wr_vs_db = {
+      opponent: findHeader(H, ["opponent","opp","team"]),
+      ypt     : findHeader(H, ["yards_per_target","ypt","yds/target","yards/target","yards per target"]),
+      cpo     : findHeader(H, ["catch_pct","comp_pct","completion%","completion_rate","reception_pct"]),
+    };
+  }
+  // TE vs S
+  if (DATA.te_vs_s){
+    const H = DATA.te_vs_s.headers;
+    COLS.te_vs_s = {
+      opponent: findHeader(H, ["opponent","opp","team"]),
+      ypt     : findHeader(H, ["yards_per_target","ypt","yds/target","y/target"]),
+      cpo     : findHeader(H, ["catch_pct","comp_pct","completion%","completion_rate"]),
+    };
+  }
+  // DB defense vs opponent WR offense
+  if (DATA.db_vs_wr){
+    const H = DATA.db_vs_wr.headers;
+    COLS.db_vs_wr = {
+      opponent: findHeader(H, ["opponent","offense_team","team"]),
+      ypt     : findHeader(H, ["yards_per_target","ypt","yds/target"]),
+      passer  : findHeader(H, ["passer_rating","qb_rating","rating"]),
+    };
+  }
+  // LB defense vs opponent TE offense
+  if (DATA.lb_vs_te){
+    const H = DATA.lb_vs_te.headers;
+    COLS.lb_vs_te = {
+      opponent: findHeader(H, ["opponent","offense_team","team"]),
+      ypt     : findHeader(H, ["yards_per_target","ypt","yds/target"]),
+      cpo     : findHeader(H, ["catch_pct","comp_pct","completion%","completion_rate"]),
+    };
+  }
 }
 
-/* ===== Opponent list ===== */
-function getOpponents(){
-  const col = COLS.opponent;
-  if(!col) return [];
-  const set = new Set(CSV.rows.map(r => r[col]).filter(Boolean));
-  return Array.from(set).sort();
+/* ====== opponent set across all files ====== */
+function opponentsAll(){
+  const sets = [];
+  for (const [key,tab] of Object.entries(DATA)){
+    if(!tab) continue;
+    const cols = COLS[key]; if(!cols || !cols.opponent) continue;
+    sets.push(new Set(tab.rows.map(r => r[cols.opponent]).filter(Boolean)));
+  }
+  const all = new Set(); sets.forEach(s => s.forEach(v => all.add(v)));
+  return Array.from(all).sort();
 }
 function buildOpponentDropdowns(){
-  const opps = getOpponents();
+  const opps = opponentsAll();
   ["opponentSelect","predictOpponent"].forEach(id=>{
     const sel = document.getElementById(id);
     sel.innerHTML = "";
@@ -272,124 +285,180 @@ function buildOpponentDropdowns(){
       sel.appendChild(o);
     });
     sel.addEventListener('change', ()=> {
-      if(id==="opponentSelect") renderScout();
-      else renderPrediction();
+      if(id==="opponentSelect") renderScout(); else renderPrediction();
     });
   });
 }
 
-/* ===== Scouting summary from one row (or avg multiple rows) ===== */
-function aggregateForOpponent(opp){
-  const rows = CSV.rows.filter(r => r[COLS.opponent] === opp);
-  const agg = (key) => rows.length ? rows.reduce((s,r)=> s + numify(r[key]), 0) / rows.length : 0;
-  // Prefer per-play stats; compute fallback from yards/attempts
-  let rushYPP = COLS.rushYPP ? agg(COLS.rushYPP) :
-      (COLS.rushYds && COLS.rushAtt ? (rows.reduce((s,r)=>s+numify(r[COLS.rushYds]),0) /
-                                        Math.max(1, rows.reduce((s,r)=>s+numify(r[COLS.rushAtt]),0))) : 0);
-  let passYPP = COLS.passYPP ? agg(COLS.passYPP) :
-      (COLS.passYds && COLS.passAtt ? (rows.reduce((s,r)=>s+numify(r[COLS.passYds]),0) /
-                                        Math.max(1, rows.reduce((s,r)=>s+numify(r[COLS.passAtt]),0))) : 0);
-  const ypp   = COLS.ypp ? agg(COLS.ypp) : (rushYPP && passYPP ? (0.4*rushYPP + 0.6*passYPP) : 0);
-  const sr    = COLS.success ? agg(COLS.success) : 0;
-  const epa   = COLS.epa ? agg(COLS.epa) : 0;
-  const td    = COLS.td ? agg(COLS.td) : 0;
-  return { rushYPP, passYPP, ypp, sr, epa, td };
+/* ====== aggregations ====== */
+function offenseAgg(opp){
+  if(!DATA.offense || !COLS.offense) return {};
+  const { opponent, rushYPP, rushYds, rushAtt, passYPP, passYds, passAtt, ypp, success, epa, td } = COLS.offense;
+  const rows = DATA.offense.rows.filter(r => r[opponent]===opp);
+  const avg = key => rows.length ? rows.reduce((s,r)=>s+numify(r[key]),0)/rows.length : 0;
+  const sum = key => rows.reduce((s,r)=>s+numify(r[key]),0);
+
+  let rYPP = rushYPP ? avg(rushYPP) :
+    (rushYds && rushAtt ? (sum(rushYds) / Math.max(1, sum(rushAtt))) : 0);
+  let pYPP = passYPP ? avg(passYPP) :
+    (passYds && passAtt ? (sum(passYds) / Math.max(1, sum(passAtt))) : 0);
+  const totalYPP = ypp ? avg(ypp) : (rYPP && pYPP ? (0.4*rYPP + 0.6*pYPP) : 0);
+
+  return {
+    rushYPP: rYPP,
+    passYPP: pYPP,
+    ypp: totalYPP,
+    sr: success ? avg(success) : 0,
+    epa: epa ? avg(epa) : 0,
+    td : td ? avg(td) : 0
+  };
 }
+function avgByOpponent(tabKey, metric){
+  const tab = DATA[tabKey]; const cols = COLS[tabKey];
+  if(!tab || !cols || !cols.opponent || !cols[metric]) return [];
+  const m = new Map();
+  tab.rows.forEach(r=>{
+    const o = r[cols.opponent]; if(!o) return;
+    const v = numify(r[cols[metric]]);
+    if(!m.has(o)) m.set(o, []);
+    m.get(o).push(v);
+  });
+  return Array.from(m.entries()).map(([o,arr])=>({ opponent:o, val: arr.reduce((a,b)=>a+b,0)/arr.length }));
+}
+
+/* ====== scouting ====== */
 function renderScout(){
   const opp = $('#opponentSelect').value;
   const out = $('#scoutOut');
-  if(!opp){ out.innerHTML = `<em>Select an opponent to see a quick GT-offense summary versus them.</em>`; return; }
-  const s = aggregateForOpponent(opp);
-  const pct = v => isFinite(v) ? (v*100).toFixed(1)+"%" : "—";
+  if(!opp){ out.innerHTML = `<em>Select an opponent to see a GT-offense summary and matchup notes.</em>`; return; }
+
+  const off = offenseAgg(opp);
+  const wrdb = avgByOpponent("wr_vs_db","ypt").find(x=>x.opponent===opp);
+  const tes  = avgByOpponent("te_vs_s","ypt").find(x=>x.opponent===opp);
+  const dbwr = avgByOpponent("db_vs_wr","ypt").find(x=>x.opponent===opp);
+  const lbte = avgByOpponent("lb_vs_te","ypt").find(x=>x.opponent===opp);
+
+  const bullets = [];
+  if (wrdb) bullets.push(`WR vs DB yards/target ≈ <b>${wrdb.val.toFixed(2)}</b> (higher favors GT WRs).`);
+  if (tes)  bullets.push(`TE vs Safety yards/target ≈ <b>${tes.val.toFixed(2)}</b>.`);
+  if (dbwr) bullets.push(`GT DBs allowed WR yards/target ≈ <b>${dbwr.val.toFixed(2)}</b> (lower is better for GT).`);
+  if (lbte) bullets.push(`GT LBs vs TE catch/efficiency proxy ≈ <b>${lbte.val.toFixed(2)}</b> y/t.`);
+
   out.innerHTML = `
     <div class="grid-2">
-      <div class="card"><div class="stat">${s.rushYPP.toFixed(2)}</div><div>Rush yards/play vs ${opp}</div></div>
-      <div class="card"><div class="stat">${s.passYPP.toFixed(2)}</div><div>Pass yards/play vs ${opp}</div></div>
-      <div class="card"><div class="stat">${s.ypp.toFixed(2)}</div><div>Total yards/play (est.)</div></div>
-      <div class="card"><div class="stat">${COLS.success ? pct(s.sr) : "—"}</div><div>${COLS.success ? "Success rate" : "Success rate (n/a in CSV)"}</div></div>
+      <div class="card"><div class="stat">${(off.rushYPP||0).toFixed(2)}</div><div>Rush yards/play vs ${opp}</div></div>
+      <div class="card"><div class="stat">${(off.passYPP||0).toFixed(2)}</div><div>Pass yards/play vs ${opp}</div></div>
+      <div class="card"><div class="stat">${(off.ypp||0).toFixed(2)}</div><div>Total yards/play (est.)</div></div>
+      <div class="card"><div class="stat">${off.sr? (off.sr*100).toFixed(1)+'%' : '—'}</div><div>${off.sr?'Success rate':'Success rate (n/a)'}</div></div>
     </div>
-    <p style="margin-top:10px;opacity:.9">
-      Tip: Ask the assistant for “tendencies vs ${opp} by down & distance” for narrative insights.
-    </p>
+    <div style="margin-top:10px">
+      <b>Matchup notes:</b>
+      <ul style="margin:8px 0 0 18px">
+        ${bullets.length ? bullets.map(b=>`<li>${b}</li>`).join("") : '<li>No coverage metrics found for this opponent in the uploaded files.</li>'}
+      </ul>
+    </div>
   `;
 }
 
-/* ===== Prediction (toy): score = z-scored blend of ypp, success, epa ===== */
+/* ====== prediction (toy, offense-only) ====== */
 function predictionScore(opp){
-  const s = aggregateForOpponent(opp);
-  // Build vector of available metrics
-  const metrics = [];
-  if (s.ypp) metrics.push(s.ypp);
-  if (s.sr)  metrics.push(s.sr*10); // scale up SR so magnitudes are comparable
-  if (s.epa) metrics.push(s.epa*8); // scale EPA
-  if (!metrics.length) metrics.push((s.passYPP||0)*0.6 + (s.rushYPP||0)*0.4);
-  return metrics.reduce((a,b)=>a+b,0) / metrics.length;
+  const s = offenseAgg(opp);
+  const vec = [];
+  if (s.ypp) vec.push(s.ypp);
+  if (s.sr)  vec.push(s.sr*10);
+  if (s.epa) vec.push(s.epa*8);
+  if (!vec.length) vec.push((s.passYPP||0)*0.6 + (s.rushYPP||0)*0.4);
+  return vec.reduce((a,b)=>a+b,0)/vec.length;
 }
 function renderPrediction(){
-  const opp = $('#predictOpponent').value;
+  const sel = $('#predictOpponent'); const opp = sel.value;
   const out = $('#predictionOut');
   if(!opp){ out.innerHTML = `<em>Select opponent then press Simulate.</em>`; return; }
-
-  // Build distribution across all opponents to normalize
-  const opps = getOpponents();
-  const scores = opps.map(o => predictionScore(o)).filter(v => isFinite(v));
-  const mean = scores.reduce((a,b)=>a+b,0) / Math.max(1,scores.length);
-  const std  = Math.sqrt(scores.reduce((s,v)=> s + Math.pow(v-mean,2),0) / Math.max(1,scores.length)) || 1;
-
-  // z-score for selected opponent: higher GT offense vs this opp => higher win prob
-  const z = (predictionScore(opp) - mean) / std;
-  const prob = 1/(1+Math.exp(-z)); // logistic of z
-
+  // normalize over all opponents present in offense CSV
+  if (!DATA.offense || !COLS.offense || !COLS.offense.opponent){
+    out.innerHTML = `<span style="color:#ffdede">Offense CSV missing; cannot compute.</span>`; return;
+  }
+  const opps = Array.from(new Set(DATA.offense.rows.map(r => r[COLS.offense.opponent]).filter(Boolean)));
+  const scores = opps.map(o => predictionScore(o)).filter(v=>isFinite(v));
+  const mean = scores.reduce((a,b)=>a+b,0)/Math.max(1,scores.length);
+  const std  = Math.sqrt(scores.reduce((s,v)=>s+Math.pow(v-mean,2),0)/Math.max(1,scores.length)) || 1;
+  const z = (predictionScore(opp)-mean)/std;
+  const prob = 1/(1+Math.exp(-z));
   out.innerHTML = `
     <p>Estimated win probability (toy, offense-only vs <b>${opp}</b>):</p>
     <div class="stat">${(prob*100).toFixed(1)}%</div>
-    <p style="opacity:.85">Uses GT offense metrics from this CSV (YPP/Success/EPA if present) normalized across opponents.</p>
+    <p style="opacity:.85">Uses GT offense metrics normalized across opponents. Add EPA/SR columns for tighter signals.</p>
   `;
 }
 $('#runPrediction').addEventListener('click', renderPrediction);
 
-/* ===== Charts: top/bottom opponents by per-play yards ===== */
-let rushChart, passChart;
-function renderCharts(){
-  const opps = getOpponents();
-  const rows = opps.map(o => ({ o, s: aggregateForOpponent(o) }));
-  const topRush = rows.slice().sort((a,b)=> (b.s.rushYPP||0)-(a.s.rushYPP||0)).slice(0,10);
-  const topPass = rows.slice().sort((a,b)=> (b.s.passYPP||0)-(a.s.passYPP||0)).slice(0,10);
-
-  const rctx = document.getElementById('rushChart').getContext('2d');
-  const pctx = document.getElementById('passChart').getContext('2d');
-  rushChart && rushChart.destroy(); passChart && passChart.destroy();
-
-  rushChart = new Chart(rctx,{
+/* ====== charts ====== */
+let rushChart, passChart, wrDbChart, teSChart;
+function chartBar(canvasId, label, labels, data){
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  return new Chart(ctx,{
     type:'bar',
-    data:{ labels: topRush.map(x=>x.o), datasets:[{label:"Rush Yds/Play", data: topRush.map(x=>+(x.s.rushYPP||0).toFixed(2))}]},
-    options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
-  });
-  passChart = new Chart(pctx,{
-    type:'bar',
-    data:{ labels: topPass.map(x=>x.o), datasets:[{label:"Pass Yds/Play", data: topPass.map(x=>+(x.s.passYPP||0).toFixed(2))}]},
+    data:{ labels, datasets:[{ label, data }]},
     options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
   });
 }
+function renderCharts(){
+  // Offense rush/pass YPP by opponent (top 10)
+  if (DATA.offense && COLS.offense){
+    const oppCol = COLS.offense.opponent;
+    const opps = Array.from(new Set(DATA.offense.rows.map(r => r[oppCol]).filter(Boolean)));
+    const rows = opps.map(o => ({ o, s: offenseAgg(o) }));
+    const rTop = rows.slice().sort((a,b)=> (b.s.rushYPP||0)-(a.s.rushYPP||0)).slice(0,10);
+    const pTop = rows.slice().sort((a,b)=> (b.s.passYPP||0)-(a.s.passYPP||0)).slice(0,10);
 
-/* ===== Spotlights: show three notable opponents from this CSV ===== */
+    rushChart && rushChart.destroy();
+    passChart && passChart.destroy();
+    rushChart = chartBar("rushChart","Rush YPP", rTop.map(x=>x.o), rTop.map(x=>+(x.s.rushYPP||0).toFixed(2)));
+    passChart = chartBar("passChart","Pass YPP", pTop.map(x=>x.o), pTop.map(x=>+(x.s.passYPP||0).toFixed(2)));
+  }
+
+  // WR vs DB Y/T
+  if (DATA.wr_vs_db && COLS.wr_vs_db && COLS.wr_vs_db.ypt){
+    const arr = avgByOpponent("wr_vs_db","ypt").sort((a,b)=>b.val-a.val).slice(0,10);
+    wrDbChart && wrDbChart.destroy();
+    wrDbChart = chartBar("wrDbChart","WR vs DB Y/T", arr.map(x=>x.opponent), arr.map(x=>+x.val.toFixed(2)));
+  }
+
+  // TE vs S Y/T
+  if (DATA.te_vs_s && COLS.te_vs_s && COLS.te_vs_s.ypt){
+    const arr = avgByOpponent("te_vs_s","ypt").sort((a,b)=>b.val-a.val).slice(0,10);
+    teSChart && teSChart.destroy();
+    teSChart = chartBar("teSChart","TE vs S Y/T", arr.map(x=>x.opponent), arr.map(x=>+x.val.toFixed(2)));
+  }
+}
+
+/* ====== spotlights ====== */
 function renderSpotlights(){
   const host = $('#spotlights'); host.innerHTML = "";
-  const opps = getOpponents();
-  if(!opps.length){ host.innerHTML = `<div class="card">No opponents found in CSV.</div>`; return; }
+  const opps = opponentsAll(); if(!opps.length){ host.innerHTML = `<div class="card">No opponents found.</div>`; return; }
   const picks = opps.sort(()=>Math.random()-0.5).slice(0,3);
   picks.forEach(o=>{
-    const s = aggregateForOpponent(o);
+    const s = offenseAgg(o);
     const el = document.createElement('div');
     el.className = 'card';
     el.innerHTML = `
       <div style="font-weight:800;font-size:1.1rem">${o}</div>
-      <div class="stat" style="margin-top:6px">${s.ypp ? s.ypp.toFixed(2) : ((s.passYPP||0)*0.6+(s.rushYPP||0)*0.4).toFixed(2)}</div>
+      <div class="stat" style="margin-top:6px">${(s.ypp||((s.passYPP||0)*0.6+(s.rushYPP||0)*0.4)).toFixed(2)}</div>
       <div style="opacity:.9">GT yards/play vs ${o}</div>
     `;
     host.appendChild(el);
   });
 }
+
+/* ====== modal ====== */
+const modal = $('#assistantModal');
+$('#openAssistant').addEventListener('click', ()=> modal.showModal());
+$('#closeAssistant').addEventListener('click', ()=> modal.close());
+modal.addEventListener('click', (e)=>{
+  const r = modal.querySelector('.modal-card').getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) modal.close();
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.open) modal.close() });
 </script>
 </body>
 </html>
