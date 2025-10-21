@@ -60,6 +60,10 @@
   <p class="sub">
     This page reads multiple GT CSVs (offense + matchup breakdowns). Pick an opponent to see scouting, charts, and a quick prediction.
   </p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:10px">
+    <button id="openAssistant" class="btn">Launch Assistant</button>
+
+  </div>
 
   <div class="section">
     <h2>🧠 Opponent Scouting & 🔮 Prediction</h2>
@@ -111,11 +115,7 @@
     <div id="spotlights" class="grid-3"></div>
   </div>
 
-  <div style="display:flex;gap:12px;justify-content:center;margin-top:10px">
-    <button id="openAssistant" class="btn">Launch Assistant</button>
-    <!-- quick links to raw CSVs -->
-    <a class="btn" href="gt_offense_vs_all_opp_lbs_breakdown.csv" download>Download Offense CSV</a>
-  </div>
+
 </main>
 
 <!-- Wider modal chat -->
@@ -462,3 +462,4 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.open) mod
 </script>
 </body>
 </html>
+
