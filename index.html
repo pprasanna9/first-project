@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Georgia Tech Football AI Assistant</title>
 
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<!-- Chart.js for lightweight charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
   :root{
@@ -14,17 +15,13 @@
     --gt-gold:#B3A369;
     --gt-gold-2:#d1b674;
     --ink:#0c1b2a;
-    --card:#0d2a4b;          /* deep navy for translucent glass */
-    --glass:rgba(255,255,255,.06);
+    --glass:rgba(255,255,255,.07);
     --ring:rgba(179,163,105,.35);
   }
-
   *{box-sizing:border-box}
   html,body{height:100%}
-
   body{
-    margin:0;
-    color:var(--gt-gold);
+    margin:0; color:var(--gt-gold);
     background:
       radial-gradient(1200px 700px at 10% -10%, rgba(255,255,255,.06), transparent 60%),
       radial-gradient(900px 600px at 110% -10%, rgba(255,255,255,.06), transparent 60%),
@@ -34,49 +31,29 @@
         rgba(255,255,255,.06) 2px,
         transparent 2px,
         transparent 70px
-      ), /* subtle yard lines */
+      ),
       var(--gt-navy);
     font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    line-height:1.4;
+    line-height:1.45;
   }
-
-  /* Floating footballs for personality */
-  .floaters{
-    position:fixed; inset:0; pointer-events:none; opacity:.12; z-index:0;
-    background:
-      url('https://upload.wikimedia.org/wikipedia/commons/6/6e/Football_%28American%29_icon.svg') no-repeat 8% 10% / 70px,
-      url('https://upload.wikimedia.org/wikipedia/commons/6/6e/Football_%28American%29_icon.svg') no-repeat 92% 22% / 60px,
-      url('https://upload.wikimedia.org/wikipedia/commons/6/6e/Football_%28American%29_icon.svg') no-repeat 15% 85% / 90px;
-    animation: drift 28s linear infinite alternate;
-  }
-  @keyframes drift{
-    from{ transform: translateY(0px) }
-    to{   transform: translateY(-16px) }
-  }
-
-  /* Layout */
-  .wrap{max-width:1100px; margin:0 auto; padding:64px 20px; position:relative; z-index:1}
-  header{display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:22px}
+  .wrap{max-width:1200px; margin:0 auto; padding:56px 18px}
+  header{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:12px}
   .badge{
-    width:54px; height:54px; border-radius:50%;
+    width:56px; height:56px; border-radius:50%;
     background:linear-gradient(145deg,var(--gt-gold),#e6d39a);
     display:grid; place-items:center; color:var(--gt-navy);
     box-shadow:0 12px 30px rgba(0,0,0,.25), inset 0 2px 8px rgba(255,255,255,.35);
-    font-size:26px; font-weight:700;
+    font-size:27px; font-weight:800;
   }
   h1{
     margin:0; font-family:'Oswald', sans-serif; font-weight:700; letter-spacing:.5px;
-    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-    text-transform:uppercase;
-    text-shadow:0 2px 0 rgba(0,0,0,.35);
+    font-size: clamp(2.2rem, 4.4vw, 3.4rem); text-transform:uppercase; text-shadow:0 2px 0 rgba(0,0,0,.35);
   }
-  .sub{
-    max-width:880px; margin:10px auto 28px; color:#e8e0c5; opacity:.9; font-size:1.05rem
-  }
+  .sub{max-width:920px; margin:10px auto 26px; color:#eee3bf; opacity:.95; font-size:1.05rem; text-align:center}
 
-  /* Buttons */
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:8px 0 30px}
   .btn{
-    appearance:none; border:0; cursor:pointer; font-weight:700;
+    appearance:none; border:0; cursor:pointer; font-weight:800;
     padding:14px 22px; border-radius:14px; letter-spacing:.3px;
     color:var(--gt-navy); background: linear-gradient(180deg,var(--gt-gold),var(--gt-gold-2));
     box-shadow: 0 10px 22px rgba(0,0,0,.25), 0 0 0 0px var(--ring);
@@ -85,92 +62,74 @@
   .btn:hover{ transform: translateY(-2px); filter:brightness(1.05); box-shadow:0 14px 28px rgba(0,0,0,.35), 0 0 0 6px var(--ring) }
   .btn:active{ transform: translateY(0) scale(.99) }
 
-  .cta-row{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom:28px}
-
-  /* Cards */
   .section{
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:22px; padding:26px; box-shadow:0 18px 40px rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:22px; padding:22px; box-shadow:0 18px 38px rgba(0,0,0,.25);
     backdrop-filter: blur(8px);
+    margin: 18px 0;
   }
   .section h2{
-    font-family:'Oswald', sans-serif; margin:0 0 12px; font-weight:600;
-    letter-spacing:.4px; text-transform:uppercase;
+    font-family:'Oswald', sans-serif; margin:0 0 12px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
   }
-  .dl-grid{
-    display:grid; gap:12px; grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
-    margin-top:10px;
+  .grid-2{display:grid; grid-template-columns: 1fr 1fr; gap:18px}
+  .grid-3{display:grid; grid-template-columns: repeat(3,1fr); gap:18px}
+  @media (max-width: 980px){ .grid-2, .grid-3{ grid-template-columns:1fr } }
+
+  .features{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0 6px}
+  .chip{font-size:.92rem; padding:8px 12px; border-radius:999px; color:#f5edd2; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12)}
+
+  /* Suggested prompts */
+  .prompts{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+  .prompt{
+    border:1px dashed rgba(255,255,255,.25); color:#f1e9cd; background:rgba(255,255,255,.05);
+    padding:10px 12px; border-radius:12px; cursor:pointer; font-size:.95rem;
   }
+  .prompt:hover{ background:rgba(255,255,255,.1) }
+
+  /* Downloads */
+  .dl-grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); margin-top:8px }
   .dl{
     display:flex; align-items:center; justify-content:center; gap:10px;
     padding:14px; border-radius:14px; text-decoration:none; color:var(--gt-navy);
     background:linear-gradient(180deg,var(--gt-gold),var(--gt-gold-2));
     box-shadow: 0 8px 18px rgba(0,0,0,.25);
-    font-weight:800; letter-spacing:.2px;
-    transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+    font-weight:800; letter-spacing:.2px; transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
   }
   .dl:hover{ transform: translateY(-2px); filter:brightness(1.06); box-shadow: 0 12px 26px rgba(0,0,0,.35) }
-  .dl span{font-size:20px}
 
-  /* Feature chips */
-  .features{
-    display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:26px 0 6px;
-  }
-  .chip{
-    font-size:.92rem; padding:8px 12px; border-radius:999px; color:#e9e1c9;
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12)
-  }
+  /* Cards */
+  .card{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px }
+  .stat{ font-size:1.6rem; font-weight:800; color:#ffeaa4 }
 
-  /* Modal (Assistant) */
-  .modal{
-    position:fixed; inset:0; background:rgba(0,0,0,.55);
-    display:none; align-items:center; justify-content:center; padding:20px; z-index:50;
-  }
+  /* Modal Chat (wider) */
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:50 }
   .modal[open]{ display:flex; }
   .modal-card{
-    width:min(100%, 980px); height:min(85vh, 860px);
-    border-radius:20px; overflow:hidden; position:relative;
-    background:#0c1f38; border:1px solid rgba(255,255,255,.12);
-    box-shadow:0 30px 80px rgba(0,0,0,.6);
-    animation: pop .18s ease-out;
+    width:min(92vw, 1200px); height:min(88vh, 900px);
+    border-radius:20px; overflow:hidden; position:relative; background:#0c1f38; border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 30px 80px rgba(0,0,0,.6); animation: pop .18s ease-out;
   }
   @keyframes pop{ from{ transform:scale(.98); opacity:0 } to{ transform:scale(1); opacity:1 } }
-
   .modal-head{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:12px 14px; background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    border-bottom:1px solid rgba(255,255,255,.08)
+    display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px;
+    background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-bottom:1px solid rgba(255,255,255,.08)
   }
-  .modal-title{
-    font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:.4px;
-    display:flex; align-items:center; gap:10px;
-  }
-  .close{
-    border:0; background:transparent; color:#f5eeda; font-size:26px; cursor:pointer; line-height:1;
-    padding:6px 10px; border-radius:10px;
-  }
+  .modal-title{ font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:.4px; display:flex; align-items:center; gap:10px }
+  .close{ border:0; background:transparent; color:#f5eeda; font-size:26px; cursor:pointer; line-height:1; padding:6px 10px; border-radius:10px }
   .close:hover{ background:rgba(255,255,255,.08) }
-
   .frame-wrap{ height: calc(100% - 58px); }
-  iframe.assistant{
-    width:100%; height:100%; border:0; display:block; background:#fff; border-radius:0;
-  }
+  iframe.assistant{ width:100%; height:100%; border:0; display:block; background:#fff }
 
-  /* Footer */
-  footer{
-    text-align:center; color:#e9e1c9; opacity:.75; margin-top:30px; font-size:.95rem
-  }
+  /* Countdown */
+  .countdown{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap }
+  .count{ min-width:110px; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); text-align:center }
+  .count .num{ font-size:1.8rem; font-weight:900; color:#ffeaa4 }
 
-  /* Small screens */
-  @media (max-width:560px){
-    .modal-card{ height:82vh }
-  }
+  footer{ text-align:center; color:#e9e1c9; opacity:.8; margin-top:20px; font-size:.95rem }
 </style>
 </head>
 <body>
-
-<div class="floaters" aria-hidden="true"></div>
 
 <main class="wrap">
   <header>
@@ -182,6 +141,18 @@
     Upload scouting spreadsheets or ask questions to get instant, grounded insights on opponents.
     Built for coaches and analysts—powered by GPT with your GT data.
   </p>
+
+  <!-- Countdown (10) -->
+  <section class="section">
+    <h2>⏱️ Countdown to Next Game</h2>
+    <div id="countdown" class="countdown" aria-live="polite">
+      <div class="count"><div class="num" id="cd-days">–</div>Days</div>
+      <div class="count"><div class="num" id="cd-hours">–</div>Hours</div>
+      <div class="count"><div class="num" id="cd-mins">–</div>Mins</div>
+      <div class="count"><div class="num" id="cd-secs">–</div>Secs</div>
+    </div>
+    <p class="sub" id="nextGameLabel" style="margin:10px 0 0; font-size:.96rem; opacity:.85;"></p>
+  </section>
 
   <div class="features">
     <div class="chip">Tendency breakdowns</div>
@@ -196,26 +167,79 @@
     <a class="btn" href="#downloads">Download Sample Data</a>
   </div>
 
-  <section id="downloads" class="section" aria-labelledby="dl-h2">
-    <h2 id="dl-h2">📊 Download Data We Scraped for the Pre-trained Bot</h2>
-    <p class="sub" style="margin:4px auto 18px; opacity:.85; font-size:.98rem">
-      Use these CSVs to reproduce our demo or to top-off your own knowledge base.
-    </p>
-    <div class="dl-grid">
-      <a class="dl" href="data/output_rushing.csv" download><span>📈</span> Rushing Data</a>
-      <a class="dl" href="data/output_receiving.csv" download><span>📊</span> Receiving Data</a>
-      <a class="dl" href="data/output_passing.csv" download><span>📉</span> Passing Data</a>
-      <a class="dl" href="data/output_defense.csv" download><span>🛡️</span> Defensive Data</a>
-      <a class="dl" href="data/output_offense_blocking.csv" download><span>🧱</span> Offensive Blocking</a>
+  <!-- Suggested Prompts (3) -->
+  <section class="section">
+    <h2>💬 Suggested Prompts</h2>
+    <p class="sub" style="margin:6px 0 14px">Click to copy, then the chat opens.</p>
+    <div class="prompts" id="prompts"></div>
+  </section>
+
+  <!-- Opponent Scouting Summaries (2) + Game Prediction (4) -->
+  <section class="section">
+    <h2>🧠 Opponent Scouting & 🔮 Prediction</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="margin-top:0">Opponent Scouting Summary</h3>
+        <label for="opponentSelect">Select opponent:</label>
+        <select id="opponentSelect" class="btn" style="padding:10px; font-weight:700; border-radius:10px; margin-left:10px"></select>
+        <div id="scoutOut" style="margin-top:14px; font-size:1rem; line-height:1.5"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Game Prediction Mode</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+          <label>GT vs</label>
+          <select id="predictOpponent" class="btn" style="padding:10px; font-weight:700; border-radius:10px"></select>
+          <button id="runPrediction" class="btn">Simulate</button>
+        </div>
+        <div id="predictionOut" style="margin-top:14px; font-size:1.05rem"></div>
+      </div>
     </div>
   </section>
 
-  <footer>
-    Made with 💛 in Atlanta • Georgia Tech colors: Navy &amp; Tech Gold
-  </footer>
+  <!-- Dynamic Dashboard (6) -->
+  <section class="section">
+    <h2>📊 Dynamic Dashboard</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="margin-top:0">Rushing — Avg Yards by Team</h3>
+        <canvas id="rushChart" height="180"></canvas>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Receiving — Avg Yards by Team</h3>
+        <canvas id="recvChart" height="180"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Player Spotlight (9) -->
+  <section class="section">
+    <h2>⭐ Player Spotlights</h2>
+    <div class="grid-3" id="spotlights"></div>
+  </section>
+
+  <!-- Trivia (14) -->
+  <section class="section">
+    <h2>🧩 GT Football Trivia</h2>
+    <div id="trivia"></div>
+    <div id="triviaResult" style="margin-top:10px; font-weight:800"></div>
+  </section>
+
+  <!-- Downloads -->
+  <section id="downloads" class="section" aria-labelledby="dl-h2">
+    <h2 id="dl-h2">📂 Download Data</h2>
+    <div class="dl-grid">
+      <a class="dl" href="data/output_rushing.csv" download>📈 Rushing Data</a>
+      <a class="dl" href="data/output_receiving.csv" download>📊 Receiving Data</a>
+      <a class="dl" href="data/output_passing.csv" download>📉 Passing Data</a>
+      <a class="dl" href="data/output_defense.csv" download>🛡️ Defensive Data</a>
+      <a class="dl" href="data/output_offense_blocking.csv" download>🧱 Offensive Blocking</a>
+    </div>
+  </section>
+
+  <footer>Made with 💛 in Atlanta • Navy &amp; Tech Gold forever</footer>
 </main>
 
-<!-- Modal with embedded chat -->
+<!-- Modal with embedded chat (wider) -->
 <dialog id="assistantModal" class="modal" aria-label="Georgia Tech Football AI Assistant chat">
   <div class="modal-card" role="document">
     <div class="modal-head">
@@ -223,7 +247,7 @@
       <button class="close" id="closeAssistant" aria-label="Close chat">&times;</button>
     </div>
     <div class="frame-wrap">
-      <!-- Replace src with your real Chatbase/Assistants URL -->
+      <!-- REPLACE src with your real Chatbase/Assistants URL -->
       <iframe
         class="assistant"
         src="https://www.chatbase.co/chatbot-iframe/agAmCcP2bEhWDDzGaNRqP"
@@ -237,28 +261,407 @@
 </dialog>
 
 <script>
-  // Modal controls + a11y niceties
-  const modal = document.getElementById('assistantModal');
-  const openBtn = document.getElementById('openAssistant');
-  const closeBtn = document.getElementById('closeAssistant');
+/* ================================
+   CONFIG — edit these as needed
+==================================*/
+const CONFIG = {
+  nextGame: { // (10) Countdown — set your next game kickoff (local time)
+    label: "vs Duke — Bobby Dodd Stadium",
+    kickoffISO: "2025-11-01T15:30:00" // yyyy-mm-ddTHH:MM:ss
+  },
+  csvPaths: { // update to your actual dataset structure if needed
+    rushing: "data/output_rushing.csv",
+    receiving: "data/output_receiving.csv",
+    passing: "data/output_passing.csv",
+    defense: "data/output_defense.csv"
+  },
+  suggestedPrompts: [ // (3)
+    "Give me a scouting report on Duke focusing on early-down rushing tendencies.",
+    "Who are the top 3rd-down receivers for Clemson and what routes do they prefer?",
+    "Compare Georgia Tech’s run/pass split by quarter across the last 4 games.",
+    "Break down NC State’s explosive play rate (runs 10+, passes 20+).",
+    "What are the most targeted zones against our secondary on 2nd & long?",
+    "Summarize Virginia’s blitz frequency and pressure rates."
+  ],
+  trivia: [ // (14) Keep these fun and short; add more if you like
+    { q: "Which stadium do the Yellow Jackets call home?", a: ["Sanford Stadium","Bobby Dodd Stadium","Mercedes-Benz Stadium","Grant Field"], correct: 1 },
+    { q: "Georgia Tech’s primary colors are Navy and ___?", a: ["Old Gold","Canary","Bronze","Yellow"], correct: 0 },
+    { q: "Which conference is GT in?", a: ["SEC","Big Ten","ACC","AAC"], correct: 2 },
+    { q: "Nickname of Georgia Tech’s mascot?", a: ["Hairy Dawg","Buzz","Aubie","Ramble"], correct: 1 },
+    { q: "Traditional GT fight song is ___?", a: ["Ramblin’ Wreck","Tech Triumph","Glory, Glory","Hail to Old GT"], correct: 0 }
+  ]
+};
 
-  openBtn.addEventListener('click', () => {
-    modal.showModal();
-    // trap focus to close button first for keyboard users
-    closeBtn.focus();
+/* ================================
+   Utilities
+==================================*/
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+function copyAndOpen(prompt){
+  navigator.clipboard?.writeText(prompt).catch(()=>{});
+  modal.showModal();
+}
+
+async function fetchCSV(path){
+  try{
+    const res = await fetch(path, { cache: "no-store" });
+    if(!res.ok) throw new Error("CSV not found");
+    const text = await res.text();
+    return parseCSV(text);
+  }catch(e){
+    console.warn("CSV load failed:", path, e.message);
+    return null;
+  }
+}
+
+// very light CSV parser (no quotes nesting support; fine for simple numeric csvs)
+function parseCSV(str){
+  const lines = str.trim().split(/\r?\n/);
+  const headers = lines.shift().split(",").map(h=>h.trim());
+  return lines.map(line=>{
+    const cells = line.split(",").map(c=>c.trim());
+    const obj = {};
+    headers.forEach((h,i)=> obj[h]=cells[i]);
+    return obj;
   });
+}
 
-  closeBtn.addEventListener('click', () => modal.close());
-  modal.addEventListener('click', (e) => {
-    // close when clicking backdrop
-    const rect = modal.querySelector('.modal-card').getBoundingClientRect();
-    if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-      modal.close();
+function avg(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0 }
+
+/* ================================
+   Modal
+==================================*/
+const modal = document.getElementById('assistantModal');
+$('#openAssistant').addEventListener('click', ()=> modal.showModal());
+$('#closeAssistant').addEventListener('click', ()=> modal.close());
+modal.addEventListener('click', (e)=>{
+  const card = modal.querySelector('.modal-card').getBoundingClientRect();
+  if (e.clientX < card.left || e.clientX > card.right || e.clientY < card.top || e.clientY > card.bottom)
+    modal.close();
+});
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.open) modal.close() });
+
+/* ================================
+   Countdown (10)
+==================================*/
+(function initCountdown(){
+  const kick = new Date(CONFIG.nextGame.kickoffISO);
+  const label = CONFIG.nextGame.label;
+  $('#nextGameLabel').textContent = `${label} — ${kick.toLocaleString()}`;
+
+  function tick(){
+    const now = new Date();
+    let diff = Math.max(0, kick - now);
+    const s = Math.floor(diff/1000);
+    const d = Math.floor(s/86400);
+    const h = Math.floor((s%86400)/3600);
+    const m = Math.floor((s%3600)/60);
+    const sec = s%60;
+    $('#cd-days').textContent=d; $('#cd-hours').textContent=h;
+    $('#cd-mins').textContent=m; $('#cd-secs').textContent=sec;
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ================================
+   Suggested Prompts (3)
+==================================*/
+(function initPrompts(){
+  const box = $('#prompts');
+  CONFIG.suggestedPrompts.forEach(p=>{
+    const el = document.createElement('button');
+    el.className='prompt';
+    el.textContent = p;
+    el.title = "Click to copy, then opens chat";
+    el.addEventListener('click', ()=> copyAndOpen(p));
+    box.appendChild(el);
+  });
+})();
+
+/* ================================
+   Data ingestion (for 2,4,6,9)
+==================================*/
+let DATA = { rushing:null, receiving:null, passing:null, defense:null };
+
+(async function loadData(){
+  const [rush, recv, pass, def] = await Promise.all([
+    fetchCSV(CONFIG.csvPaths.rushing),
+    fetchCSV(CONFIG.csvPaths.receiving),
+    fetchCSV(CONFIG.csvPaths.passing),
+    fetchCSV(CONFIG.csvPaths.defense),
+  ]);
+  DATA = { rushing:rush, receiving:recv, passing:pass, defense:def };
+
+  buildOpponents();
+  renderScout();           // initial (if opponent exists)
+  renderPrediction();      // initial
+  renderDashboard();       // (6)
+  renderSpotlights();      // (9)
+})();
+
+/* Helpers to infer columns (best-effort if headers vary) */
+function findColumn(headers, candidates){
+  const idx = headers.find(h => candidates.some(c => h.toLowerCase().includes(c)));
+  return idx || null;
+}
+function num(n){ const x = parseFloat(n); return isNaN(x)?0:x }
+
+/* ================================
+   Opponent list + Scouting (2)
+==================================*/
+function collectTeams(){
+  const sets = [];
+  [DATA.rushing, DATA.receiving, DATA.passing, DATA.defense].forEach(tab=>{
+    if(!tab) return;
+    const headers = Object.keys(tab[0]||{});
+    const teamCol = findColumn(headers, ["team","opponent","school"]);
+    if(!teamCol) return;
+    sets.push(new Set(tab.map(r=>r[teamCol]).filter(Boolean)));
+  });
+  const all = new Set();
+  sets.forEach(s=> s.forEach(v=> all.add(v)));
+  return Array.from(all).sort();
+}
+function buildOpponents(){
+  const teams = collectTeams();
+  const selectIds = ["opponentSelect","predictOpponent"];
+  selectIds.forEach(id=>{
+    const sel = document.getElementById(id);
+    sel.innerHTML = "";
+    const opt0 = document.createElement('option');
+    opt0.value=""; opt0.textContent="Select Opponent";
+    sel.appendChild(opt0);
+    teams.forEach(t=>{
+      const o = document.createElement('option'); o.value=t; o.textContent=t;
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', ()=>{
+      if(id==="opponentSelect") renderScout();
+      if(id==="predictOpponent") renderPrediction();
+    });
+  });
+}
+function summarizeTeam(team){
+  // crude aggregation across tabs using guessed columns
+  const sums = { rushY:[], rushTD:[], recvY:[], passY:[], passTD:[], defTkl:[] };
+  const aggregate = (tab, wantTeam=true) => {
+    if(!tab || !tab.length) return;
+    const headers = Object.keys(tab[0]);
+    const teamCol = findColumn(headers, ["team","opponent","school"]);
+    tab.filter(r => team? r[teamCol]===team : true).forEach(r=>{
+      const yCols = ["yards","yds","gain"];
+      const tdCols = ["td","touchdown","tds"];
+      const tklCols = ["tackle","tackles"];
+      if(tab===DATA.rushing){
+        const y = num(r[findColumn(headers,yCols)]); if(y) sums.rushY.push(y);
+        const td = num(r[findColumn(headers,tdCols)]); if(td) sums.rushTD.push(td);
+      }
+      if(tab===DATA.receiving){
+        const y = num(r[findColumn(headers,yCols)]); if(y) sums.recvY.push(y);
+      }
+      if(tab===DATA.passing){
+        const y = num(r[findColumn(headers,yCols)]); if(y) sums.passY.push(y);
+        const td = num(r[findColumn(headers,tdCols)]); if(td) sums.passTD.push(td);
+      }
+      if(tab===DATA.defense){
+        const t = num(r[findColumn(headers,tklCols)]); if(t) sums.defTkl.push(t);
+      }
+    });
+  };
+  [DATA.rushing,DATA.receiving,DATA.passing,DATA.defense].forEach(t=>aggregate(t,true));
+  return {
+    rushY: avg(sums.rushY), rushTD: avg(sums.rushTD),
+    recvY: avg(sums.recvY), passY: avg(sums.passY), passTD: avg(sums.passTD),
+    defTkl: avg(sums.defTkl)
+  };
+}
+function renderScout(){
+  const team = $('#opponentSelect').value;
+  const out = $('#scoutOut');
+  if(!team){ out.innerHTML = `<em>Select an opponent to see a quick summary.</em>`; return; }
+  const s = summarizeTeam(team);
+  out.innerHTML = `
+    <div class="grid-2">
+      <div class="card"><div class="stat">${s.rushY.toFixed(1)}</div><div>Avg Rushing Yards (sample)</div></div>
+      <div class="card"><div class="stat">${s.passY.toFixed(1)}</div><div>Avg Passing Yards (sample)</div></div>
+      <div class="card"><div class="stat">${s.recvY.toFixed(1)}</div><div>Avg Receiving Yards (sample)</div></div>
+      <div class="card"><div class="stat">${s.passTD.toFixed(2)}</div><div>Passing TD Rate (approx)</div></div>
+    </div>
+    <p style="margin-top:10px;opacity:.9">
+      Need narrative tendencies? Click a prompt below or ask the assistant for a full scouting report on <b>${team}</b>.
+    </p>
+  `;
+}
+
+/* ================================
+   Prediction (4) — toy heuristic
+==================================*/
+function teamOffenseScore(team){
+  const s = summarizeTeam(team);
+  // Toy score: weight passing + rushing with mild TD bonus
+  return (0.6*s.passY + 0.4*s.rushY + 12*s.passTD);
+}
+function renderPrediction(){
+  const team = $('#predictOpponent').value;
+  const out = $('#predictionOut');
+  if(!team){ out.innerHTML = `<em>Select opponent then press Simulate.</em>`; return; }
+  // GT baseline from combined data (treat rows labeled "Georgia Tech" or "GT")
+  const candidates = ["Georgia Tech","GT","Ga Tech","GeorgiaTech"];
+  const teamList = collectTeams();
+  const gtName = teamList.find(t => candidates.includes(t)) || "Georgia Tech";
+  const gt = teamOffenseScore(gtName);
+  const opp = teamOffenseScore(team);
+  // probability via logistic
+  const diff = gt - opp;
+  const p = 1/(1+Math.exp(-diff/50)); // scale factor for smoothness
+  out.innerHTML = `
+    <p>Estimated win probability (very rough):</p>
+    <div class="stat">${(p*100).toFixed(1)}%</div>
+    <p style="opacity:.85">Based on simple offensive yardage/TD heuristics from current CSVs. For better accuracy, plug in EPA/play or success rates.</p>
+  `;
+}
+$('#runPrediction').addEventListener('click', renderPrediction);
+
+/* ================================
+   Dashboard (6)
+==================================*/
+let rushChart, recvChart;
+function renderDashboard(){
+  const rushTab = DATA.rushing, recvTab = DATA.receiving;
+  if(!rushTab || !recvTab){
+    // show placeholders
+    const ctx1 = document.getElementById('rushChart').getContext('2d');
+    const ctx2 = document.getElementById('recvChart').getContext('2d');
+    const placeholder = (ctx,label)=> new Chart(ctx,{type:'bar',data:{labels:["N/A"],datasets:[{label:label,data:[0]}]},options:{plugins:{legend:{display:false}}}});
+    rushChart = placeholder(ctx1,"Rushing");
+    recvChart = placeholder(ctx2,"Receiving");
+    return;
+  }
+  // group by team average yards
+  function groupAvg(tab){
+    const map = new Map();
+    const headers = Object.keys(tab[0]);
+    const teamCol = findColumn(headers, ["team","opponent","school"]);
+    const yCol = findColumn(headers, ["yards","yds","gain"]);
+    if(!teamCol || !yCol) return [];
+    tab.forEach(r=>{
+      const t = r[teamCol]; const y = num(r[yCol]);
+      if(!t || isNaN(y)) return;
+      if(!map.has(t)) map.set(t, []);
+      map.get(t).push(y);
+    });
+    return Array.from(map.entries()).map(([team,arr])=>({team, val: avg(arr)})).sort((a,b)=>b.val-a.val).slice(0,12);
+  }
+  const rushData = groupAvg(rushTab);
+  const recvData = groupAvg(recvTab);
+
+  const ctx1 = document.getElementById('rushChart').getContext('2d');
+  const ctx2 = document.getElementById('recvChart').getContext('2d');
+
+  rushChart && rushChart.destroy();
+  recvChart && recvChart.destroy();
+
+  rushChart = new Chart(ctx1,{
+    type:'bar',
+    data:{ labels: rushData.map(d=>d.team), datasets:[{label:"Avg Rush Yards", data:rushData.map(d=>d.val)}]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+  });
+  recvChart = new Chart(ctx2,{
+    type:'bar',
+    data:{ labels: recvData.map(d=>d.team), datasets:[{label:"Avg Receiving Yards", data:recvData.map(d=>d.val)}]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
+  });
+}
+
+/* ================================
+   Player Spotlights (9)
+==================================*/
+function renderSpotlights(){
+  const host = $('#spotlights');
+  host.innerHTML = "";
+  // choose three players from receiving/passing/rushing (if present)
+  const pools = [DATA.rushing, DATA.receiving, DATA.passing].filter(Boolean);
+  if(!pools.length){
+    host.innerHTML = `<div class="card">Upload or host CSVs to populate player spotlights.</div>`;
+    return;
+  }
+  const picks = [];
+  for (let i=0;i<3;i++){
+    const tab = pools[i % pools.length];
+    const row = tab[Math.floor(Math.random()*tab.length)];
+    if(!row){ continue; }
+    const headers = Object.keys(row);
+    const nameCol = findColumn(headers, ["player","name","athlete"]);
+    const teamCol = findColumn(headers, ["team","school"]);
+    const yCol = findColumn(headers, ["yards","yds","gain"]);
+    picks.push({
+      name: row[nameCol] || "Player",
+      team: row[teamCol] || "GT",
+      yards: num(row[yCol]) || Math.floor(30+Math.random()*90),
+      src: i===0?"Rushing":(i===1?"Receiving":"Passing")
+    });
+  }
+  picks.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `
+      <div style="font-weight:800; font-size:1.1rem">${p.name}</div>
+      <div style="opacity:.9">${p.team} • ${p.src}</div>
+      <div class="stat" style="margin-top:8px">${p.yards}</div>
+      <div style="opacity:.85">sample yards</div>
+    `;
+    host.appendChild(el);
+  });
+}
+
+/* ================================
+   Trivia (14)
+==================================*/
+(function initTrivia(){
+  const host = $('#trivia');
+  let score = 0, idx = 0;
+
+  function render(){
+    if(idx >= CONFIG.trivia.length){
+      $('#triviaResult').textContent = `Score: ${score}/${CONFIG.trivia.length} — ${score===CONFIG.trivia.length?'Perfect! 🐝':'Nice! Keep buzzing.'}`;
+      host.innerHTML = "";
+      return;
     }
+    const it = CONFIG.trivia[idx];
+    host.innerHTML = `
+      <div class="card">
+        <div style="font-weight:800; font-size:1.05rem; margin-bottom:8px">${it.q}</div>
+        <div style="display:grid; gap:8px">
+          ${it.a.map((opt,i)=>`<button class="btn" style="text-align:left" data-i="${i}">${String.fromCharCode(65+i)}. ${opt}</button>`).join('')}
+        </div>
+      </div>
+    `;
+    $$("#trivia .btn").forEach(b=> b.addEventListener('click', ()=>{
+      const i = parseInt(b.dataset.i,10);
+      if(i===it.correct) score++;
+      idx++; render();
+    }));
+  }
+  render();
+})();
+
+/* ================================
+   Build suggested prompts UI (3)
+==================================*/
+(function seedPrompts(){
+  const promptsBox = $('#prompts');
+  CONFIG.suggestedPrompts.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'prompt';
+    btn.textContent = p;
+    btn.addEventListener('click', ()=>{
+      navigator.clipboard?.writeText(p).catch(()=>{});
+      modal.showModal();
+    });
+    promptsBox.appendChild(btn);
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.open) modal.close();
-  });
+})();
 </script>
 </body>
 </html>
